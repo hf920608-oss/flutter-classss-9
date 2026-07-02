@@ -54,25 +54,19 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> with
-SingleTickerProviderStateMixin {
-  late Animation animation;
-  late Animation colorAnimation;
-  late AnimationController animationController;
+SingleTickerProviderStateMixin{
+late Animation _animation;
+late AnimationController _animationController;
+var listRadius = [100.0,150.0,200.0,250.0,300.0];
 
 @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(vsync: this,duration: Duration(seconds: 5),lowerBound: 0.5);
+    _animationController.addListener((){
 
-    animationController = AnimationController(vsync: this, duration: Duration(seconds: 5));
-    animation = Tween<double>(begin: 0.0, end : 150.0).animate(animationController);
-    colorAnimation = ColorTween(begin: Colors.blue, end: Colors.lightBlueAccent).animate(animationController);
-    animationController.addListener((){
-      print(animation.value);
-      setState(() {
-
-      });
     });
-animationController.forward();
+    _animationController.forward();
   }
 
   @override
@@ -94,11 +88,17 @@ animationController.forward();
         title: Text(widget.title),
       ),
       body: Center(
-    child: Container(
-      width: animation.value,
-      height: animation.value,
-      color: colorAnimation.value,
-    ),
+          child: Stack(
+            alignment: Alignment.center,
+            children: listRadius.map((raduis) => Container(
+              width: raduis * _animationController.value,
+              height: raduis * _animationController.value,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.lightBlueAccent.withOpacity(1.0 - _animationController.value),
+              ),
+            )).toList()
+          ),
       ),
 
     );
